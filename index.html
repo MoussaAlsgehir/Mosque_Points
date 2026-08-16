@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إدارة حلقة القرآن الكريم</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            arabic: ['Tajawal', 'sans-serif'],
+          },
+          colors: {
+            emerald: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            gold: {
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts: Tajawal -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+
+    .sticky-col {
+      position: sticky;
+      right: 0;
+      z-index: 10;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .tab-btn.active {
+      border-bottom: 3px solid #10b981;
+      color: #10b981;
+      font-weight: 700;
+    }
+
+    .modal {
+      transition: opacity 0.25s ease;
+    }
+
+    .status-present {
+      background-color: #d1fae5;
+      color: #065f46;
+      border-color: #10b981;
+    }
+
+    .dark .status-present {
+      background-color: #064e3b;
+      color: #a7f3d0;
+      border-color: #059669;
+    }
+
+    .status-excused {
+      background-color: #fefce8;
+      color: #a16207;
+      border-color: #eab308;
+    }
+
+    .dark .status-excused {
+      background-color: #713f12;
+      color: #fef08a;
+      border-color: #ca8a04;
+    }
+
+    .status-unexcused {
+      background-color: #fef2f2;
+      color: #b91c1c;
+      border-color: #ef4444;
+    }
+
+    .dark .status-unexcused {
+      background-color: #7f1d1d;
+      color: #fecaca;
+      border-color: #dc2626;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+
+  <!-- Navbar -->
+  <nav class="bg-emerald-800 dark:bg-emerald-950 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          <span class="font-bold text-xl">منظومة إحصاء نقاط الحلقة</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Dark Mode Toggle Button -->
+          <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-emerald-700 dark:bg-emerald-900 text-gold-400 hover:text-white transition">
+            <span id="theme-toggle-dark-icon" class="hidden">🌙</span>
+            <span id="theme-toggle-light-icon" class="hidden">☀️</span>
+          </button>
+          
+          <button onclick="exportData()" class="px-3 py-1.5 text-sm bg-emerald-700 dark:bg-emerald-900 hover:bg-emerald-600 rounded-md transition flex items-center gap-1">
+            <span>تصدير</span>
+          </button>
+          <label class="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 text-emerald-800 dark:text-emerald-400 hover:bg-white rounded-md transition cursor-pointer flex items-center gap-1">
+            <span>استيراد</span>
+            <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+          </label>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Global Controls: Month/Year -->
+  <div class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div class="flex flex-col">
+            <label class="text-xs text-slate-500 dark:text-slate-400 mb-1">السنة</label>
+            <select id="yearSelect" onchange="changeDate()" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500">
+            </select>
+          </div>
+          <div class="flex flex-col">
+            <label class="text-xs text-slate-500 dark:text-slate-400 mb-1">الشهر</label>
+            <select id="monthSelect" onchange="changeDate()" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500">
+              <option value="1">يناير</option>
+              <option value="2">فبراير</option>
+              <option value="3">مارس</option>
+              <option value="4">أبريل</option>
+              <option value="5">مايو</option>
+              <option value="6">يونيو</option>
+              <option value="7">يوليو</option>
+              <option value="8">أغسطس</option>
+              <option value="9">سبتمبر</option>
+              <option value="10">أكتوبر</option>
+              <option value="11">نوفمبر</option>
+              <option value="12">ديسمبر</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex overflow-x-auto gap-1 no-scrollbar">
+          <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">الرئيسية</button>
+          <button onclick="switchTab('students')" id="tab-students" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">إدارة الطلاب</button>
+          <button onclick="switchTab('attendance')" id="tab-attendance" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">سجل الحضور</button>
+          <button onclick="switchTab('quran')" id="tab-quran" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">سجل التسميع</button>
+          <button onclick="switchTab('results')" id="tab-results" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">النتائج النهائية</button>
+          <button onclick="switchTab('leaderboard')" id="tab-leaderboard" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">ترتيب الطلاب</button>
+          <button onclick="switchTab('report')" id="tab-report" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">التقرير الشهري</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- ================= DASHBOARD VIEW ================= -->
+    <div id="view-dashboard" class="view-section">
+      <h2 class="text-2xl font-bold mb-6 border-r-4 border-gold-500 pr-3">لوحة القيادة - إحصائيات الشهر</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">👥</div>
+          <div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">إجمالي الطلاب</p>
+            <p class="text-2xl font-bold" id="dash-total-students">0</p>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-gold-100 dark:bg-yellow-900/40 text-gold-600 flex items-center justify-center text-xl">⭐</div>
+          <div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">إجمالي نقاط الحلقة</p>
+            <p class="text-2xl font-bold" id="dash-total-points">0</p>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 flex items-center justify-center text-xl">📖</div>
+          <div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">مجموع الصفحات المسمعة</p>
+            <p class="text-2xl font-bold" id="dash-total-pages">0</p>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-600 flex items-center justify-center text-xl">🥇</div>
+          <div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">أعلى طالب بالنقاط</p>
+            <p class="text-xl font-bold truncate w-32" id="dash-top-student">-</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+          <h3 class="text-lg font-bold mb-4">ملخص الحضور الشهري</h3>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> حاضر (+5)</span>
+              <span class="font-bold" id="dash-present-count">0</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
+              <div id="bar-present" class="bg-emerald-500 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-500"></span> غياب بعذر (-5)</span>
+              <span class="font-bold" id="dash-excused-count">0</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
+              <div id="bar-excused" class="bg-yellow-500 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span> غياب بلا عذر (-25)</span>
+              <span class="font-bold" id="dash-unexcused-count">0</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
+              <div id="bar-unexcused" class="bg-red-500 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-emerald-800 dark:bg-emerald-950 rounded-xl shadow-sm border border-emerald-700 dark:border-emerald-800 p-6 text-white relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-32 h-32 bg-emerald-700 dark:bg-emerald-900 rounded-full -ml-10 -mt-10 opacity-50"></div>
+          <h3 class="text-lg font-bold mb-4 relative z-10">قوانين النقاط والمواعيد المطبقة</h3>
+          <ul class="space-y-3 relative z-10 text-sm">
+            <li class="flex items-center justify-between border-b border-emerald-700 dark:border-emerald-800 pb-2">
+              <span>أيام الحلقة</span> <span class="bg-emerald-700 dark:bg-emerald-800 px-2 py-1 rounded">الأحد - الثلاثاء - الخميس</span>
+            </li>
+            <li class="flex items-center justify-between border-b border-emerald-700 dark:border-emerald-800 pb-2">
+              <span>الحضور</span> <span class="bg-emerald-600 px-2 py-1 rounded">+5 نقاط</span>
+            </li>
+            <li class="flex items-center justify-between border-b border-emerald-700 dark:border-emerald-800 pb-2">
+              <span>غياب بعذر</span> <span class="bg-yellow-600 px-2 py-1 rounded">-5 نقاط</span>
+            </li>
+            <li class="flex items-center justify-between border-b border-emerald-700 dark:border-emerald-800 pb-2">
+              <span>غياب بلا عذر</span> <span class="bg-red-500 px-2 py-1 rounded">-25 نقطة</span>
+            </li>
+            <li class="flex items-center justify-between border-b border-emerald-700 dark:border-emerald-800 pb-2">
+              <span>صفحة القرآن (1-5)</span> <span class="bg-emerald-600 px-2 py-1 rounded">10 نقاط / صفحة</span>
+            </li>
+            <li class="flex items-center justify-between pb-2">
+              <span>ما زاد عن 5 صفحات</span> <span class="bg-gold-500 text-slate-900 font-bold px-2 py-1 rounded">25 نقطة / صفحة إضافية</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= STUDENTS VIEW ================= -->
+    <div id="view-students" class="view-section hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold border-r-4 border-gold-500 pr-3">إدارة الطلاب</h2>
+        <button onclick="openAddStudentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
+          + إضافة طالب جديد
+        </button>
+      </div>
+
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+          <input type="text" id="studentSearch" placeholder="بحث عن طالب..." onkeyup="filterStudents()" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg px-4 py-2 w-full max-w-md focus:outline-none focus:border-emerald-500">
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
+              <tr>
+                <th class="px-6 py-3 font-bold">#</th>
+                <th class="px-6 py-3 font-bold">اسم الطالب</th>
+                <th class="px-6 py-3 font-bold">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= ATTENDANCE VIEW ================= -->
+    <div id="view-attendance" class="view-section hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold border-r-4 border-gold-500 pr-3">سجل الحضور</h2>
+        <div class="text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded border border-blue-100 dark:border-blue-800">يتم الحفظ تلقائياً</div>
+      </div>
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-sm whitespace-nowrap">
+            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300" id="attendanceTableHead">
+            </thead>
+            <tbody id="attendanceTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= QURAN VIEW ================= -->
+    <div id="view-quran" class="view-section hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold border-r-4 border-gold-500 pr-3">سجل التسميع (صفحات القرآن)</h2>
+        <div class="text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded border border-blue-100 dark:border-blue-800">أدخل عدد الصفحات - الحفظ تلقائي</div>
+      </div>
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-sm whitespace-nowrap">
+            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300" id="quranTableHead">
+            </thead>
+            <tbody id="quranTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= RESULTS VIEW ================= -->
+    <div id="view-results" class="view-section hidden">
+      <h2 class="text-2xl font-bold mb-6 border-r-4 border-gold-500 pr-3">النتائج النهائية للشهر المحدد</h2>
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
+              <tr>
+                <th class="px-6 py-3 font-bold sticky-col bg-slate-50 dark:bg-slate-800">اسم الطالب</th>
+                <th class="px-6 py-3 font-bold text-center">نقاط الحضور</th>
+                <th class="px-6 py-3 font-bold text-center">صفحات القرآن</th>
+                <th class="px-6 py-3 font-bold text-center">نقاط القرآن</th>
+                <th class="px-6 py-3 font-bold text-center bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">إجمالي النقاط</th>
+              </tr>
+            </thead>
+            <tbody id="resultsTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= LEADERBOARD VIEW ================= -->
+    <div id="view-leaderboard" class="view-section hidden">
+      <h2 class="text-2xl font-bold mb-6 border-r-4 border-gold-500 pr-3">ترتيب الطلاب</h2>
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+          <div id="leaderboardContainer" class="space-y-3">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= REPORT VIEW ================= -->
+    <div id="view-report" class="view-section hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold border-r-4 border-gold-500 pr-3">التقرير الشهري الشامل</h2>
+        <button onclick="window.print()" class="bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center gap-2">
+          🖨️ طباعة التقرير
+        </button>
+      </div>
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8" id="printableReport">
+        <div class="text-center mb-8 border-b dark:border-slate-700 pb-6">
+          <h1 class="text-3xl font-bold text-emerald-800 dark:text-emerald-400 mb-2">تقرير حلقة القرآن الكريم</h1>
+          <p class="text-lg text-slate-600 dark:text-slate-400" id="reportMonthTitle">شهر ... سنة ...</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">عدد أيام الحلقة</p>
+            <p class="text-2xl font-bold" id="rep-days">0</p>
+          </div>
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">الطلاب المسجلين</p>
+            <p class="text-2xl font-bold" id="rep-students">0</p>
+          </div>
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">إجمالي التسميع (صفحات)</p>
+            <p class="text-2xl font-bold" id="rep-pages">0</p>
+          </div>
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">متوسط نقاط الطالب</p>
+            <p class="text-2xl font-bold" id="rep-avg-points">0</p>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-bold mb-4 border-b dark:border-slate-700 pb-2">أعلى 5 طلاب</h3>
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-right text-sm border dark:border-slate-700">
+            <thead class="bg-emerald-50 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300">
+              <tr>
+                <th class="px-4 py-2 border dark:border-slate-700">المركز</th>
+                <th class="px-4 py-2 border dark:border-slate-700">اسم الطالب</th>
+                <th class="px-4 py-2 border dark:border-slate-700">الحضور</th>
+                <th class="px-4 py-2 border dark:border-slate-700">التسميع</th>
+                <th class="px-4 py-2 border dark:border-slate-700 font-bold">المجموع</th>
+              </tr>
+            </thead>
+            <tbody id="reportTopStudentsBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= MODALS ================= -->
+  <!-- Add/Edit Student Modal -->
+  <div id="studentModal" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center modal">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+      <div class="bg-emerald-800 dark:bg-emerald-950 text-white px-6 py-4 flex justify-between items-center">
+        <h3 class="font-bold text-lg" id="studentModalTitle">إضافة طالب جديد</h3>
+        <button onclick="closeModal('studentModal')" class="text-emerald-200 hover:text-white">&times;</button>
+      </div>
+      <div class="p-6">
+        <input type="hidden" id="studentIdInput">
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">اسم الطالب رباعي / ثلاثي</label>
+          <input type="text" id="studentNameInput" class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button onclick="closeModal('studentModal')" class="px-4 py-2 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 rounded-lg">إلغاء</button>
+          <button onclick="saveStudent()" class="px-4 py-2 text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm">حفظ الطالب</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Details Modal -->
+  <div id="studentDetailsModal" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center modal">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col">
+      <div class="bg-emerald-800 dark:bg-emerald-950 text-white px-6 py-4 flex justify-between items-center shrink-0">
+        <h3 class="font-bold text-xl" id="detailModalName">اسم الطالب</h3>
+        <button onclick="closeModal('studentDetailsModal')" class="text-emerald-200 hover:text-white text-2xl">&times;</button>
+      </div>
+      <div class="p-6 overflow-y-auto">
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-xs text-slate-500 dark:text-slate-400">إجمالي النقاط</p>
+            <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400" id="detailTotalPoints">0</p>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-xs text-slate-500 dark:text-slate-400">نقاط الحضور</p>
+            <p class="text-xl font-bold" id="detailAttPoints">0</p>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-xs text-slate-500 dark:text-slate-400">نقاط التسميع</p>
+            <p class="text-xl font-bold" id="detailQuranPoints">0</p>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-xs text-slate-500 dark:text-slate-400">مجموع الصفحات</p>
+            <p class="text-xl font-bold text-blue-600 dark:text-blue-400" id="detailTotalPages">0</p>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mb-6 text-sm justify-center bg-white dark:bg-slate-700/30 py-2 rounded-lg border dark:border-slate-700">
+          <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400"><span id="detailPresent">0</span> ✅ حاضر</span>
+          <span class="text-slate-300 dark:text-slate-600">|</span>
+          <span class="flex items-center gap-1 text-yellow-600 dark:text-yellow-400"><span id="detailExcused">0</span> 🟡 غياب بعذر</span>
+          <span class="text-slate-300 dark:text-slate-600">|</span>
+          <span class="flex items-center gap-1 text-red-600 dark:text-red-400"><span id="detailUnexcused">0</span> 🔴 غياب بلا عذر</span>
+        </div>
+        <h4 class="font-bold mb-3 border-b dark:border-slate-700 pb-2">السجل اليومي لهذا الشهر</h4>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-sm border dark:border-slate-700">
+            <thead class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+              <tr>
+                <th class="px-4 py-2 border dark:border-slate-700">التاريخ</th>
+                <th class="px-4 py-2 border dark:border-slate-700">اليوم</th>
+                <th class="px-4 py-2 border dark:border-slate-700">الحالة</th>
+                <th class="px-4 py-2 border dark:border-slate-700 text-center">الصفحات</th>
+                <th class="px-4 py-2 border dark:border-slate-700 text-center">نقاط الحضور</th>
+                <th class="px-4 py-2 border dark:border-slate-700 text-center">نقاط القرآن</th>
+                <th class="px-4 py-2 border dark:border-slate-700 text-center font-bold">المجموع</th>
+              </tr>
+            </thead>
+            <tbody id="detailTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT ================= -->
+  <script>
+    /* --- CONSTANTS & RULES --- */
+    const RULES = {
+      ATTENDANCE: {
+        'present': 5,
+        'excused': -5,
+        'unexcused': -25
+      },
+      QURAN: {
+        BASE_POINTS: 10,
+        THRESHOLD: 5,
+        EXTRA_POINTS: 25
+      }
+    };
+
+    const DAYS_ARABIC = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+    function generateId() {
+      return 's_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    /* --- INITIAL DATA --- */
+    const INITIAL_STUDENTS = [
+      { id: generateId(), name: "أمير بكري" },
+      { id: generateId(), name: "مصعب سلامة" },
+      { id: generateId(), name: "جود القاري" },
+      { id: generateId(), name: "حسام صادي" },
+      { id: generateId(), name: "نور الدين عمور" },
+      { id: generateId(), name: "يوسف عصفور" },
+      { id: generateId(), name: "فراس عصفور" },
+      { id: generateId(), name: "علي صالح الخلف" },
+      { id: generateId(), name: "حمزة الحلبي" },
+      { id: generateId(), name: "محمد درباس" },
+      { id: generateId(), name: "براء أبو كاشف" }
+    ];
+
+    /* --- STATE MANAGEMENT --- */
+    let state = {
+      students: [],
+      records: {}, 
+      currentYear: new Date().getFullYear(),
+      currentMonth: new Date().getMonth() + 1
+    };
+
+    let currentDates = [];
+
+    /* --- DARK MODE LOGIC --- */
+    function initTheme() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-toggle-dark-icon').classList.remove('hidden');
+      } else {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-toggle-light-icon').classList.remove('hidden');
+      }
+    }
+
+    function toggleDarkMode() {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        document.getElementById('theme-toggle-light-icon').classList.add('hidden');
+        document.getElementById('theme-toggle-dark-icon').classList.remove('hidden');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        document.getElementById('theme-toggle-dark-icon').classList.add('hidden');
+        document.getElementById('theme-toggle-light-icon').classList.remove('hidden');
+      }
+    }
+
+    /* --- INITIALIZATION --- */
+    window.onload = () => {
+      initTheme();
+      initYearSelect();
+      loadData();
+
+      document.getElementById('yearSelect').value = state.currentYear;
+      document.getElementById('monthSelect').value = state.currentMonth;
+
+      calculateCurrentDates();
+      switchTab('dashboard');
+    };
+
+    function initYearSelect() {
+      const yearSelect = document.getElementById('yearSelect');
+      const currentY = new Date().getFullYear();
+      for (let i = currentY - 2; i <= currentY + 5; i++) {
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.innerText = i;
+        yearSelect.appendChild(opt);
+      }
+    }
+
+    /* --- CORE LOGIC & MATH --- */
+    function calculateAttendancePoints(status) {
+      if (!status) return 0;
+      return RULES.ATTENDANCE[status] || 0;
+    }
+
+    function calculateQuranPoints(pages) {
+      let p = parseInt(pages);
+      if (isNaN(p) || p <= 0) return 0;
+
+      if (p <= RULES.QURAN.THRESHOLD) {
+        return p * RULES.QURAN.BASE_POINTS;
+      } else {
+        let basePoints = RULES.QURAN.THRESHOLD * RULES.QURAN.BASE_POINTS; 
+        let extraPages = p - RULES.QURAN.THRESHOLD;
+        let extraPoints = extraPages * RULES.QURAN.EXTRA_POINTS;
+        return basePoints + extraPoints;
+      }
+    }
+
+    /* أصبحت الدالة تقتصر فقط على الأحد (0)، الثلاثاء (2)، الخميس (4) */
+    function getMonthlyDates(year, month) {
+      let dates = [];
+      let date = new Date(year, month - 1, 1);
+
+      while (date.getMonth() === month - 1) {
+        let day = date.getDay();
+        if (day === 0 || day === 2 || day === 4) { // الأحد، الثلاثاء، الخميس
+          dates.push(new Date(date));
+        }
+        date.setDate(date.getDate() + 1);
+      }
+      return dates;
+    }
+
+    function formatDateKey(dateObj) {
+      let y = dateObj.getFullYear();
+      let m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      let d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getMonthKey(year, month) {
+      return `${year}-${String(month).padStart(2, '0')}`;
+    }
+
+    /* --- DATA OPERATIONS --- */
+    function changeDate() {
+      state.currentYear = parseInt(document.getElementById('yearSelect').value);
+      state.currentMonth = parseInt(document.getElementById('monthSelect').value);
+      calculateCurrentDates();
+      refreshCurrentTab();
+    }
+
+    function calculateCurrentDates() {
+      currentDates = getMonthlyDates(state.currentYear, state.currentMonth);
+      let monthKey = getMonthKey(state.currentYear, state.currentMonth);
+      if (!state.records[monthKey]) {
+        state.records[monthKey] = {};
+      }
+    }
+
+    function getStudentRecord(studentId, dateKey) {
+      let monthKey = getMonthKey(state.currentYear, state.currentMonth);
+      let fullKey = `${studentId}-${dateKey}`;
+      return (state.records[monthKey] && state.records[monthKey][fullKey]) ? state.records[monthKey][fullKey] : { attendance: '', pages: '' };
+    }
+
+    function updateRecord(studentId, dateKey, field, value) {
+      let monthKey = getMonthKey(state.currentYear, state.currentMonth);
+      let fullKey = `${studentId}-${dateKey}`;
+
+      if (!state.records[monthKey]) {
+        state.records[monthKey] = {};
+      }
+
+      if (!state.records[monthKey][fullKey]) {
+        state.records[monthKey][fullKey] = { attendance: '', pages: '' };
+      }
+
+      state.records[monthKey][fullKey][field] = value;
+      saveData();
+
+      if (!document.getElementById('view-results').classList.contains('hidden')) renderResults();
+      if (!document.getElementById('view-dashboard').classList.contains('hidden')) renderDashboard();
+    }
+
+    function getStudentMonthStats(studentId) {
+      let stats = {
+        attPoints: 0, quranPoints: 0, totalPoints: 0,
+        totalPages: 0, present: 0, excused: 0, unexcused: 0,
+        daily: []
+      };
+
+      currentDates.forEach(d => {
+        let dKey = formatDateKey(d);
+        let rec = getStudentRecord(studentId, dKey);
+        let ap = calculateAttendancePoints(rec.attendance);
+        let qp = calculateQuranPoints(rec.pages);
+
+        stats.attPoints += ap;
+        stats.quranPoints += qp;
+        stats.totalPages += (parseInt(rec.pages) || 0);
+
+        if (rec.attendance === 'present') stats.present++;
+        if (rec.attendance === 'excused') stats.excused++;
+        if (rec.attendance === 'unexcused') stats.unexcused++;
+
+        stats.daily.push({
+          date: dKey,
+          dayName: DAYS_ARABIC[d.getDay()],
+          record: rec,
+          ap: ap,
+          qp: qp,
+          total: ap + qp
+        });
+      });
+
+      stats.totalPoints = stats.attPoints + stats.quranPoints;
+      return stats;
+    }
+
+    /* --- RENDERERS --- */
+    function switchTab(tabId) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+
+      if (tabId === 'dashboard') renderDashboard();
+      if (tabId === 'students') renderStudents();
+      if (tabId === 'attendance') renderAttendance();
+      if (tabId === 'quran') renderQuran();
+      if (tabId === 'results') renderResults();
+      if (tabId === 'leaderboard') renderLeaderboard();
+      if (tabId === 'report') renderReport();
+    }
+
+    function refreshCurrentTab() {
+      const activeBtn = document.querySelector('.tab-btn.active');
+      if (activeBtn) {
+        const activeTab = activeBtn.id.replace('tab-', '');
+        switchTab(activeTab);
+      }
+    }
+
+    function renderDashboard() {
+      let totalStudents = state.students.length;
+      let totalPoints = 0;
+      let totalPages = 0;
+      let presentCount = 0;
+      let excusedCount = 0;
+      let unexcusedCount = 0;
+
+      let topStudentName = "-";
+      let topStudentPoints = -9999;
+
+      state.students.forEach(s => {
+        let stats = getStudentMonthStats(s.id);
+        totalPoints += stats.totalPoints;
+        totalPages += stats.totalPages;
+        presentCount += stats.present;
+        excusedCount += stats.excused;
+        unexcusedCount += stats.unexcused;
+
+        if (stats.totalPoints > topStudentPoints && stats.totalPoints > 0) {
+          topStudentPoints = stats.totalPoints;
+          topStudentName = s.name;
+        }
+      });
+
+      document.getElementById('dash-total-students').innerText = totalStudents;
+      document.getElementById('dash-total-points').innerText = totalPoints;
+      document.getElementById('dash-total-pages').innerText = totalPages;
+      document.getElementById('dash-top-student').innerText = topStudentName;
+
+      document.getElementById('dash-present-count').innerText = presentCount;
+      document.getElementById('dash-excused-count').innerText = excusedCount;
+      document.getElementById('dash-unexcused-count').innerText = unexcusedCount;
+
+      let totalDays = presentCount + excusedCount + unexcusedCount;
+      if (totalDays > 0) {
+        document.getElementById('bar-present').style.width = `${(presentCount / totalDays) * 100}%`;
+        document.getElementById('bar-excused').style.width = `${(excusedCount / totalDays) * 100}%`;
+        document.getElementById('bar-unexcused').style.width = `${(unexcusedCount / totalDays) * 100}%`;
+      } else {
+        document.getElementById('bar-present').style.width = '0%';
+        document.getElementById('bar-excused').style.width = '0%';
+        document.getElementById('bar-unexcused').style.width = '0%';
+      }
+    }
+
+    function renderStudents() {
+      const tbody = document.getElementById('studentsTableBody');
+      tbody.innerHTML = '';
+
+      const filter = document.getElementById('studentSearch').value.toLowerCase();
+      let filtered = state.students.filter(s => s.name.toLowerCase().includes(filter));
+
+      filtered.forEach((s, index) => {
+        let tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/40 transition";
+        tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-slate-500 dark:text-slate-400">${index + 1}</td>
+            <td class="px-6 py-4 whitespace-nowrap font-medium cursor-pointer hover:text-emerald-500" onclick="openStudentDetails('${s.id}')">${s.name}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <button onclick="editStudent('${s.id}')" class="text-blue-500 hover:text-blue-700 mx-1 bg-blue-50 dark:bg-blue-900/40 px-2 py-1 rounded">تعديل</button>
+                <button onclick="deleteStudent('${s.id}')" class="text-red-500 hover:text-red-700 mx-1 bg-red-50 dark:bg-red-900/40 px-2 py-1 rounded">حذف</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function buildTableHeader() {
+      let html = `<tr><th class="px-6 py-3 font-bold sticky-col bg-slate-50 dark:bg-slate-800">اسم الطالب</th>`;
+      currentDates.forEach(d => {
+        let dayName = DAYS_ARABIC[d.getDay()];
+        let dayNum = d.getDate();
+        let mNum = d.getMonth() + 1;
+        html += `
+          <th class="px-4 py-3 text-center min-w-[140px] border-r border-slate-200 dark:border-slate-700">
+            <div class="font-bold text-emerald-700 dark:text-emerald-400">${dayName}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">${dayNum}/${mNum}</div>
+          </th>`;
+      });
+      html += `</tr>`;
+      return html;
+    }
+
+    function renderAttendance() {
+      document.getElementById('attendanceTableHead').innerHTML = buildTableHeader();
+      const tbody = document.getElementById('attendanceTableBody');
+      tbody.innerHTML = '';
+
+      state.students.forEach(s => {
+        let tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/40 transition";
+        let rowHtml = `<td class="px-6 py-4 font-bold sticky-col bg-white dark:bg-slate-800 cursor-pointer hover:text-emerald-500" onclick="openStudentDetails('${s.id}')">${s.name}</td>`;
+
+        currentDates.forEach(d => {
+          let dKey = formatDateKey(d);
+          let rec = getStudentRecord(s.id, dKey);
+          let val = rec.attendance;
+
+          let selectClass = "border rounded px-2 py-1 text-sm w-full outline-none focus:border-emerald-500 ";
+          if (val === 'present') selectClass += "status-present font-bold";
+          else if (val === 'excused') selectClass += "status-excused";
+          else if (val === 'unexcused') selectClass += "status-unexcused";
+          else selectClass += "bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600";
+
+          rowHtml += `
+            <td class="px-2 py-2 border-r border-slate-100 dark:border-slate-700/50">
+               <select class="${selectClass}" onchange="updateRecord('${s.id}', '${dKey}', 'attendance', this.value); renderAttendance();">
+                    <option value="" ${val === '' ? 'selected' : ''}>- حدد -</option>
+                    <option value="present" ${val === 'present' ? 'selected' : ''}>✅ حاضر (+5)</option>
+                    <option value="excused" ${val === 'excused' ? 'selected' : ''}>🟡 بعذر (-5)</option>
+                    <option value="unexcused" ${val === 'unexcused' ? 'selected' : ''}>🔴 بلا عذر (-25)</option>
+                </select>
+            </td>`;
+        });
+        tr.innerHTML = rowHtml;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderQuran() {
+      document.getElementById('quranTableHead').innerHTML = buildTableHeader();
+      const tbody = document.getElementById('quranTableBody');
+      tbody.innerHTML = '';
+
+      state.students.forEach(s => {
+        let tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/40 transition";
+        let rowHtml = `<td class="px-6 py-4 font-bold sticky-col bg-white dark:bg-slate-800 cursor-pointer hover:text-emerald-500" onclick="openStudentDetails('${s.id}')">${s.name}</td>`;
+
+        currentDates.forEach(d => {
+          let dKey = formatDateKey(d);
+          let rec = getStudentRecord(s.id, dKey);
+          let pages = rec.pages;
+          let pts = calculateQuranPoints(pages);
+          let ptsHtml = pts > 0 ? `<span class="text-xs text-emerald-600 dark:text-emerald-400 font-bold block mt-1">${pts} نقطة</span>` : `<span class="text-xs text-slate-400 block mt-1">-</span>`;
+
+          rowHtml += `
+            <td class="px-2 py-2 border-r border-slate-100 dark:border-slate-700/50 text-center">
+                <input type="number" min="0" placeholder="0" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded px-2 py-1 w-16 text-center focus:outline-none focus:border-emerald-500" 
+                    value="${pages}" 
+                    onchange="updateRecord('${s.id}', '${dKey}', 'pages', this.value); renderQuran();">
+                ${ptsHtml}
+            </td>`;
+        });
+        tr.innerHTML = rowHtml;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderResults() {
+      const tbody = document.getElementById('resultsTableBody');
+      tbody.innerHTML = '';
+
+      state.students.forEach(s => {
+        let stats = getStudentMonthStats(s.id);
+        let tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/40 transition";
+
+        let totalClass = stats.totalPoints > 0 ? 'text-emerald-600 dark:text-emerald-400' : (stats.totalPoints < 0 ? 'text-red-500' : '');
+
+        tr.innerHTML = `
+            <td class="px-6 py-4 font-bold sticky-col bg-white dark:bg-slate-800 cursor-pointer hover:text-emerald-500" onclick="openStudentDetails('${s.id}')">${s.name}</td>
+            <td class="px-6 py-4 text-center font-medium ${stats.attPoints < 0 ? 'text-red-500' : ''}" dir="ltr">${stats.attPoints}</td>
+            <td class="px-6 py-4 text-center text-blue-600 dark:text-blue-400 font-medium">${stats.totalPages}</td>
+            <td class="px-6 py-4 text-center font-medium">${stats.quranPoints}</td>
+            <td class="px-6 py-4 text-center font-bold text-lg ${totalClass} bg-emerald-50/50 dark:bg-emerald-900/20" dir="ltr">${stats.totalPoints}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderLeaderboard() {
+      const container = document.getElementById('leaderboardContainer');
+      container.innerHTML = '';
+      let list = state.students.map(s => {
+        let stats = getStudentMonthStats(s.id);
+        return { name: s.name, id: s.id, total: stats.totalPoints, pages: stats.totalPages };
+      });
+
+      list.sort((a, b) => b.total - a.total);
+
+      list.forEach((item, index) => {
+        let rankIcon = `<span class="text-xl font-bold text-slate-400 w-8 text-center">${index + 1}</span>`;
+        let bgClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700";
+        if (index === 0) { rankIcon = `<span class="text-3xl w-8 text-center" title="المركز الأول">🥇</span>`; bgClass = "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800"; }
+        if (index === 1) { rankIcon = `<span class="text-3xl w-8 text-center" title="المركز الثاني">🥈</span>`; bgClass = "bg-slate-50 dark:bg-slate-700/30 border-slate-200 dark:border-slate-600"; }
+        if (index === 2) { rankIcon = `<span class="text-3xl w-8 text-center" title="المركز الثالث">🥉</span>`; bgClass = "bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800"; }
+
+        let html = `
+          <div class="flex items-center justify-between p-4 border rounded-xl shadow-sm ${bgClass} hover:shadow-md transition cursor-pointer" onclick="openStudentDetails('${item.id}')">
+            <div class="flex items-center gap-4">
+              ${rankIcon}
+              <div>
+                <h4 class="font-bold text-lg">${item.name}</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400">${item.pages} صفحة مسمعة</p>
+              </div>
+            </div>
+            <div class="text-left" dir="ltr">
+              <span class="text-2xl font-black ${item.total > 0 ? 'text-emerald-600 dark:text-emerald-400' : (item.total < 0 ? 'text-red-500' : '')}">${item.total}</span>
+              <span class="text-xs text-slate-400 block mt-[-5px]">نقطة</span>
+            </div>
+          </div>
+        `;
+        container.innerHTML += html;
+      });
+    }
+
+    function renderReport() {
+      let mName = document.getElementById('monthSelect').options[document.getElementById('monthSelect').selectedIndex].text;
+      document.getElementById('reportMonthTitle').innerText = `شهر ${mName} - سنة ${state.currentYear}`;
+
+      let totalStudents = state.students.length;
+      let totalPoints = 0;
+      let totalPages = 0;
+
+      let list = [];
+
+      state.students.forEach(s => {
+        let stats = getStudentMonthStats(s.id);
+        totalPoints += stats.totalPoints;
+        totalPages += stats.totalPages;
+        list.push({ name: s.name, stats: stats });
+      });
+
+      let avg = totalStudents > 0 ? (totalPoints / totalStudents).toFixed(1) : 0;
+
+      document.getElementById('rep-days').innerText = currentDates.length;
+      document.getElementById('rep-students').innerText = totalStudents;
+      document.getElementById('rep-pages').innerText = totalPages;
+      document.getElementById('rep-avg-points').innerText = avg;
+
+      list.sort((a, b) => b.stats.totalPoints - a.stats.totalPoints);
+      let top5 = list.slice(0, 5);
+
+      const tbody = document.getElementById('reportTopStudentsBody');
+      tbody.innerHTML = '';
+
+      top5.forEach((item, idx) => {
+        tbody.innerHTML += `
+            <tr>
+                <td class="px-4 py-2 border dark:border-slate-700 font-bold text-emerald-600 dark:text-emerald-400">${idx + 1}</td>
+                <td class="px-4 py-2 border dark:border-slate-700 font-bold">${item.name}</td>
+                <td class="px-4 py-2 border dark:border-slate-700" dir="ltr">${item.stats.attPoints}</td>
+                <td class="px-4 py-2 border dark:border-slate-700 text-blue-600 dark:text-blue-400">${item.stats.totalPages}</td>
+                <td class="px-4 py-2 border dark:border-slate-700 font-bold" dir="ltr">${item.stats.totalPoints}</td>
+            </tr>
+        `;
+      });
+    }
+
+    /* --- MODALS & STUDENT MGMT --- */
+    function filterStudents() {
+      renderStudents();
+    }
+
+    function openAddStudentModal() {
+      document.getElementById('studentModalTitle').innerText = "إضافة طالب جديد";
+      document.getElementById('studentIdInput').value = "";
+      document.getElementById('studentNameInput').value = "";
+      document.getElementById('studentModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('studentNameInput').focus(), 100);
+    }
+
+    function editStudent(id) {
+      let s = state.students.find(x => x.id === id);
+      if (!s) return;
+      document.getElementById('studentModalTitle').innerText = "تعديل اسم الطالب";
+      document.getElementById('studentIdInput').value = s.id;
+      document.getElementById('studentNameInput').value = s.name;
+      document.getElementById('studentModal').classList.remove('hidden');
+    }
+
+    function saveStudent() {
+      let id = document.getElementById('studentIdInput').value;
+      let name = document.getElementById('studentNameInput').value.trim();
+      if (!name) { alert('الرجاء إدخال اسم الطالب'); return; }
+
+      if (id) {
+        let s = state.students.find(x => x.id === id);
+        if (s) s.name = name;
+      } else {
+        state.students.push({ id: generateId(), name: name });
+      }
+      saveData();
+      closeModal('studentModal');
+      refreshCurrentTab();
+    }
+
+    function deleteStudent(id) {
+      if (confirm('هل أنت متأكد من حذف هذا الطالب نهائياً؟')) {
+        state.students = state.students.filter(x => x.id !== id);
+        saveData();
+        renderStudents();
+      }
+    }
+
+    function openStudentDetails(id) {
+      let s = state.students.find(x => x.id === id);
+      if (!s) return;
+
+      let stats = getStudentMonthStats(id);
+
+      document.getElementById('detailModalName').innerText = s.name;
+      document.getElementById('detailTotalPoints').innerText = stats.totalPoints;
+      document.getElementById('detailAttPoints').innerText = stats.attPoints;
+      document.getElementById('detailQuranPoints').innerText = stats.quranPoints;
+      document.getElementById('detailTotalPages').innerText = stats.totalPages;
+
+      document.getElementById('detailPresent').innerText = stats.present;
+      document.getElementById('detailExcused').innerText = stats.excused;
+      document.getElementById('detailUnexcused').innerText = stats.unexcused;
+
+      const tbody = document.getElementById('detailTableBody');
+      tbody.innerHTML = '';
+
+      stats.daily.forEach(d => {
+        let statusBadge = "-";
+        if (d.record.attendance === 'present') statusBadge = '<span class="bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 px-2 py-1 rounded text-xs">✅ حاضر</span>';
+        if (d.record.attendance === 'excused') statusBadge = '<span class="bg-yellow-100 dark:bg-yellow-900/60 text-yellow-800 dark:text-yellow-300 px-2 py-1 rounded text-xs">🟡 بعذر</span>';
+        if (d.record.attendance === 'unexcused') statusBadge = '<span class="bg-red-100 dark:bg-red-900/60 text-red-800 dark:text-red-300 px-2 py-1 rounded text-xs">🔴 بلا عذر</span>';
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+            <td class="px-4 py-2 border dark:border-slate-700 font-medium text-slate-700 dark:text-slate-300" dir="ltr">${d.date}</td>
+            <td class="px-4 py-2 border dark:border-slate-700 text-slate-500 dark:text-slate-400">${d.dayName}</td>
+            <td class="px-4 py-2 border dark:border-slate-700">${statusBadge}</td>
+            <td class="px-4 py-2 border dark:border-slate-700 text-center text-blue-600 dark:text-blue-400 font-bold">${d.record.pages || '-'}</td>
+            <td class="px-4 py-2 border dark:border-slate-700 text-center" dir="ltr">${d.ap !== 0 ? d.ap : '-'}</td>
+            <td class="px-4 py-2 border dark:border-slate-700 text-center" dir="ltr">${d.qp !== 0 ? d.qp : '-'}</td>
+            <td class="px-4 py-2 border dark:border-slate-700 text-center font-bold ${d.total > 0 ? 'text-emerald-600 dark:text-emerald-400' : (d.total < 0 ? 'text-red-500' : '')}" dir="ltr">${d.total !== 0 ? d.total : '-'}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('studentDetailsModal').classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    /* --- LOCAL STORAGE & DATA EXPORT --- */
+    function saveData() {
+      localStorage.setItem('quran_circle_data', JSON.stringify(state));
+    }
+
+    function loadData() {
+      let saved = localStorage.getItem('quran_circle_data');
+      if (saved) {
+        try {
+          let parsed = JSON.parse(saved);
+          state.students = parsed.students || [];
+          state.records = parsed.records || {};
+        } catch (e) {
+          console.error("Error loading data", e);
+        }
+      } else {
+        state.students = INITIAL_STUDENTS;
+        saveData();
+      }
+    }
+
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+      const dlAnchorElem = document.createElement('a');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `quran_circle_backup_${state.currentYear}_${state.currentMonth}.json`);
+      dlAnchorElem.click();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const importedState = JSON.parse(e.target.result);
+          if (importedState.students && importedState.records) {
+            state.students = importedState.students;
+            state.records = importedState.records;
+            saveData();
+            alert('تم استيراد البيانات بنجاح!');
+            location.reload(); 
+          } else {
+            alert('ملف البيانات غير صالح.');
+          }
+        } catch (err) {
+          alert('حدث خطأ أثناء قراءة الملف.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    window.onclick = function (event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.classList.add('hidden');
+      }
+    }
+  </script>
+</body>
+
+</html>
