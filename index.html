@@ -131,22 +131,27 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gold-500" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
           <span class="font-bold text-xl">منظومة إحصاء نقاط الحلقة</span>
         </div>
         <div class="flex items-center gap-3">
           <!-- Dark Mode Toggle Button -->
-          <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-emerald-700 dark:bg-emerald-900 text-gold-400 hover:text-white transition">
+          <button onclick="toggleDarkMode()"
+            class="p-2 rounded-lg bg-emerald-700 dark:bg-emerald-900 text-gold-400 hover:text-white transition">
             <span id="theme-toggle-dark-icon" class="hidden">🌙</span>
             <span id="theme-toggle-light-icon" class="hidden">☀️</span>
           </button>
-          
-          <button onclick="exportData()" class="px-3 py-1.5 text-sm bg-emerald-700 dark:bg-emerald-900 hover:bg-emerald-600 rounded-md transition flex items-center gap-1">
+
+          <button onclick="exportData()"
+            class="px-3 py-1.5 text-sm bg-emerald-700 dark:bg-emerald-900 hover:bg-emerald-600 rounded-md transition flex items-center gap-1">
             <span>تصدير</span>
           </button>
-          <label class="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 text-emerald-800 dark:text-emerald-400 hover:bg-white rounded-md transition cursor-pointer flex items-center gap-1">
+          <label
+            class="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 text-emerald-800 dark:text-emerald-400 hover:bg-white rounded-md transition cursor-pointer flex items-center gap-1">
             <span>استيراد</span>
             <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
           </label>
@@ -162,12 +167,14 @@
         <div class="flex items-center gap-4">
           <div class="flex flex-col">
             <label class="text-xs text-slate-500 dark:text-slate-400 mb-1">السنة</label>
-            <select id="yearSelect" onchange="changeDate()" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500">
+            <select id="yearSelect" onchange="changeDate()"
+              class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500">
             </select>
           </div>
           <div class="flex flex-col">
             <label class="text-xs text-slate-500 dark:text-slate-400 mb-1">الشهر</label>
-            <select id="monthSelect" onchange="changeDate()" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500">
+            <select id="monthSelect" onchange="changeDate()"
+              class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500">
               <option value="1">يناير</option>
               <option value="2">فبراير</option>
               <option value="3">مارس</option>
@@ -186,13 +193,26 @@
 
         <!-- Navigation Tabs -->
         <div class="flex overflow-x-auto gap-1 no-scrollbar">
-          <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">الرئيسية</button>
-          <button onclick="switchTab('students')" id="tab-students" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">إدارة الطلاب</button>
-          <button onclick="switchTab('attendance')" id="tab-attendance" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">سجل الحضور</button>
-          <button onclick="switchTab('quran')" id="tab-quran" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">سجل التسميع</button>
-          <button onclick="switchTab('results')" id="tab-results" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">النتائج النهائية</button>
-          <button onclick="switchTab('leaderboard')" id="tab-leaderboard" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">ترتيب الطلاب</button>
-          <button onclick="switchTab('report')" id="tab-report" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">التقرير الشهري</button>
+          <button onclick="switchTab('dashboard')" id="tab-dashboard"
+            class="tab-btn active px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">الرئيسية</button>
+          <button onclick="switchTab('students')" id="tab-students"
+            class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">إدارة
+            الطلاب</button>
+          <button onclick="switchTab('attendance')" id="tab-attendance"
+            class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">سجل
+            الحضور</button>
+          <button onclick="switchTab('quran')" id="tab-quran"
+            class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">سجل
+            التسميع</button>
+          <button onclick="switchTab('results')" id="tab-results"
+            class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">النتائج
+            النهائية</button>
+          <button onclick="switchTab('leaderboard')" id="tab-leaderboard"
+            class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">ترتيب
+            الطلاب</button>
+          <button onclick="switchTab('report')" id="tab-report"
+            class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">التقرير
+            الشهري</button>
         </div>
       </div>
     </div>
@@ -206,29 +226,41 @@
       <h2 class="text-2xl font-bold mb-6 border-r-4 border-gold-500 pr-3">لوحة القيادة - إحصائيات الشهر</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">👥</div>
+        <div
+          class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
+            👥</div>
           <div>
             <p class="text-sm text-slate-500 dark:text-slate-400">إجمالي الطلاب</p>
             <p class="text-2xl font-bold" id="dash-total-students">0</p>
           </div>
         </div>
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-gold-100 dark:bg-yellow-900/40 text-gold-600 flex items-center justify-center text-xl">⭐</div>
+        <div
+          class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-full bg-gold-100 dark:bg-yellow-900/40 text-gold-600 flex items-center justify-center text-xl">
+            ⭐</div>
           <div>
             <p class="text-sm text-slate-500 dark:text-slate-400">إجمالي نقاط الحلقة</p>
             <p class="text-2xl font-bold" id="dash-total-points">0</p>
           </div>
         </div>
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 flex items-center justify-center text-xl">📖</div>
+        <div
+          class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 flex items-center justify-center text-xl">
+            📖</div>
           <div>
             <p class="text-sm text-slate-500 dark:text-slate-400">مجموع الصفحات المسمعة</p>
             <p class="text-2xl font-bold" id="dash-total-pages">0</p>
           </div>
         </div>
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-600 flex items-center justify-center text-xl">🥇</div>
+        <div
+          class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-600 flex items-center justify-center text-xl">
+            🥇</div>
           <div>
             <p class="text-sm text-slate-500 dark:text-slate-400">أعلى طالب بالنقاط</p>
             <p class="text-xl font-bold truncate w-32" id="dash-top-student">-</p>
@@ -241,7 +273,8 @@
           <h3 class="text-lg font-bold mb-4">ملخص الحضور الشهري</h3>
           <div class="space-y-4">
             <div class="flex justify-between items-center">
-              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> حاضر (+5)</span>
+              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span
+                  class="w-3 h-3 rounded-full bg-emerald-500"></span> حاضر (+5)</span>
               <span class="font-bold" id="dash-present-count">0</span>
             </div>
             <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
@@ -249,7 +282,8 @@
             </div>
 
             <div class="flex justify-between items-center">
-              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-500"></span> غياب بعذر (-5)</span>
+              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span
+                  class="w-3 h-3 rounded-full bg-yellow-500"></span> غياب بعذر (-5)</span>
               <span class="font-bold" id="dash-excused-count">0</span>
             </div>
             <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
@@ -257,7 +291,8 @@
             </div>
 
             <div class="flex justify-between items-center">
-              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span> غياب بلا عذر (-25)</span>
+              <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2"><span
+                  class="w-3 h-3 rounded-full bg-red-500"></span> غياب بلا عذر (-25)</span>
               <span class="font-bold" id="dash-unexcused-count">0</span>
             </div>
             <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
@@ -266,12 +301,16 @@
           </div>
         </div>
 
-        <div class="bg-emerald-800 dark:bg-emerald-950 rounded-xl shadow-sm border border-emerald-700 dark:border-emerald-800 p-6 text-white relative overflow-hidden">
-          <div class="absolute top-0 left-0 w-32 h-32 bg-emerald-700 dark:bg-emerald-900 rounded-full -ml-10 -mt-10 opacity-50"></div>
+        <div
+          class="bg-emerald-800 dark:bg-emerald-950 rounded-xl shadow-sm border border-emerald-700 dark:border-emerald-800 p-6 text-white relative overflow-hidden">
+          <div
+            class="absolute top-0 left-0 w-32 h-32 bg-emerald-700 dark:bg-emerald-900 rounded-full -ml-10 -mt-10 opacity-50">
+          </div>
           <h3 class="text-lg font-bold mb-4 relative z-10">قوانين النقاط والمواعيد المطبقة</h3>
           <ul class="space-y-3 relative z-10 text-sm">
             <li class="flex items-center justify-between border-b border-emerald-700 dark:border-emerald-800 pb-2">
-              <span>أيام الحلقة</span> <span class="bg-emerald-700 dark:bg-emerald-800 px-2 py-1 rounded">الأحد - الثلاثاء - الخميس</span>
+              <span>أيام الحلقة</span> <span class="bg-emerald-700 dark:bg-emerald-800 px-2 py-1 rounded">الأحد -
+                الثلاثاء - الخميس</span>
             </li>
             <li class="flex items-center justify-between border-b border-emerald-700 dark:border-emerald-800 pb-2">
               <span>الحضور</span> <span class="bg-emerald-600 px-2 py-1 rounded">+5 نقاط</span>
@@ -286,7 +325,8 @@
               <span>صفحة القرآن (1-5)</span> <span class="bg-emerald-600 px-2 py-1 rounded">10 نقاط / صفحة</span>
             </li>
             <li class="flex items-center justify-between pb-2">
-              <span>ما زاد عن 5 صفحات</span> <span class="bg-gold-500 text-slate-900 font-bold px-2 py-1 rounded">25 نقطة / صفحة إضافية</span>
+              <span>ما زاد عن 5 صفحات</span> <span class="bg-gold-500 text-slate-900 font-bold px-2 py-1 rounded">25
+                نقطة / صفحة إضافية</span>
             </li>
           </ul>
         </div>
@@ -297,14 +337,17 @@
     <div id="view-students" class="view-section hidden">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold border-r-4 border-gold-500 pr-3">إدارة الطلاب</h2>
-        <button onclick="openAddStudentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
+        <button onclick="openAddStudentModal()"
+          class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
           + إضافة طالب جديد
         </button>
       </div>
 
-      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div
+        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
-          <input type="text" id="studentSearch" placeholder="بحث عن طالب..." onkeyup="filterStudents()" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg px-4 py-2 w-full max-w-md focus:outline-none focus:border-emerald-500">
+          <input type="text" id="studentSearch" placeholder="بحث عن طالب..." onkeyup="filterStudents()"
+            class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg px-4 py-2 w-full max-w-md focus:outline-none focus:border-emerald-500">
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-right text-sm">
@@ -326,9 +369,12 @@
     <div id="view-attendance" class="view-section hidden">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold border-r-4 border-gold-500 pr-3">سجل الحضور</h2>
-        <div class="text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded border border-blue-100 dark:border-blue-800">يتم الحفظ تلقائياً</div>
+        <div
+          class="text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded border border-blue-100 dark:border-blue-800">
+          يتم الحفظ تلقائياً</div>
       </div>
-      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div
+        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-right text-sm whitespace-nowrap">
             <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300" id="attendanceTableHead">
@@ -344,9 +390,12 @@
     <div id="view-quran" class="view-section hidden">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold border-r-4 border-gold-500 pr-3">سجل التسميع (صفحات القرآن)</h2>
-        <div class="text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded border border-blue-100 dark:border-blue-800">أدخل عدد الصفحات - الحفظ تلقائي</div>
+        <div
+          class="text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded border border-blue-100 dark:border-blue-800">
+          أدخل عدد الصفحات - الحفظ تلقائي</div>
       </div>
-      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div
+        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-right text-sm whitespace-nowrap">
             <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300" id="quranTableHead">
@@ -361,7 +410,8 @@
     <!-- ================= RESULTS VIEW ================= -->
     <div id="view-results" class="view-section hidden">
       <h2 class="text-2xl font-bold mb-6 border-r-4 border-gold-500 pr-3">النتائج النهائية للشهر المحدد</h2>
-      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div
+        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-right text-sm">
             <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
@@ -370,7 +420,9 @@
                 <th class="px-6 py-3 font-bold text-center">نقاط الحضور</th>
                 <th class="px-6 py-3 font-bold text-center">صفحات القرآن</th>
                 <th class="px-6 py-3 font-bold text-center">نقاط القرآن</th>
-                <th class="px-6 py-3 font-bold text-center bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">إجمالي النقاط</th>
+                <th
+                  class="px-6 py-3 font-bold text-center bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">
+                  إجمالي النقاط</th>
               </tr>
             </thead>
             <tbody id="resultsTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
@@ -395,11 +447,13 @@
     <div id="view-report" class="view-section hidden">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold border-r-4 border-gold-500 pr-3">التقرير الشهري الشامل</h2>
-        <button onclick="window.print()" class="bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center gap-2">
+        <button onclick="window.print()"
+          class="bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center gap-2">
           🖨️ طباعة التقرير
         </button>
       </div>
-      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8" id="printableReport">
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8"
+        id="printableReport">
         <div class="text-center mb-8 border-b dark:border-slate-700 pb-6">
           <h1 class="text-3xl font-bold text-emerald-800 dark:text-emerald-400 mb-2">تقرير حلقة القرآن الكريم</h1>
           <p class="text-lg text-slate-600 dark:text-slate-400" id="reportMonthTitle">شهر ... سنة ...</p>
@@ -457,50 +511,63 @@
         <input type="hidden" id="studentIdInput">
         <div class="mb-4">
           <label class="block text-sm font-medium mb-1">اسم الطالب رباعي / ثلاثي</label>
-          <input type="text" id="studentNameInput" class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <input type="text" id="studentNameInput"
+            class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
         </div>
         <div class="flex justify-end gap-3 mt-6">
-          <button onclick="closeModal('studentModal')" class="px-4 py-2 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 rounded-lg">إلغاء</button>
-          <button onclick="saveStudent()" class="px-4 py-2 text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm">حفظ الطالب</button>
+          <button onclick="closeModal('studentModal')"
+            class="px-4 py-2 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 rounded-lg">إلغاء</button>
+          <button onclick="saveStudent()"
+            class="px-4 py-2 text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm">حفظ الطالب</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Student Details Modal -->
-  <div id="studentDetailsModal" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center modal">
+  <div id="studentDetailsModal"
+    class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center modal">
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col">
       <div class="bg-emerald-800 dark:bg-emerald-950 text-white px-6 py-4 flex justify-between items-center shrink-0">
         <h3 class="font-bold text-xl" id="detailModalName">اسم الطالب</h3>
-        <button onclick="closeModal('studentDetailsModal')" class="text-emerald-200 hover:text-white text-2xl">&times;</button>
+        <button onclick="closeModal('studentDetailsModal')"
+          class="text-emerald-200 hover:text-white text-2xl">&times;</button>
       </div>
       <div class="p-6 overflow-y-auto">
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
+          <div
+            class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
             <p class="text-xs text-slate-500 dark:text-slate-400">إجمالي النقاط</p>
             <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400" id="detailTotalPoints">0</p>
           </div>
-          <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
+          <div
+            class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
             <p class="text-xs text-slate-500 dark:text-slate-400">نقاط الحضور</p>
             <p class="text-xl font-bold" id="detailAttPoints">0</p>
           </div>
-          <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
+          <div
+            class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
             <p class="text-xs text-slate-500 dark:text-slate-400">نقاط التسميع</p>
             <p class="text-xl font-bold" id="detailQuranPoints">0</p>
           </div>
-          <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
+          <div
+            class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700 text-center">
             <p class="text-xs text-slate-500 dark:text-slate-400">مجموع الصفحات</p>
             <p class="text-xl font-bold text-blue-600 dark:text-blue-400" id="detailTotalPages">0</p>
           </div>
         </div>
 
-        <div class="flex gap-4 mb-6 text-sm justify-center bg-white dark:bg-slate-700/30 py-2 rounded-lg border dark:border-slate-700">
-          <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400"><span id="detailPresent">0</span> ✅ حاضر</span>
+        <div
+          class="flex gap-4 mb-6 text-sm justify-center bg-white dark:bg-slate-700/30 py-2 rounded-lg border dark:border-slate-700">
+          <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400"><span id="detailPresent">0</span>
+            ✅ حاضر</span>
           <span class="text-slate-300 dark:text-slate-600">|</span>
-          <span class="flex items-center gap-1 text-yellow-600 dark:text-yellow-400"><span id="detailExcused">0</span> 🟡 غياب بعذر</span>
+          <span class="flex items-center gap-1 text-yellow-600 dark:text-yellow-400"><span id="detailExcused">0</span>
+            🟡 غياب بعذر</span>
           <span class="text-slate-300 dark:text-slate-600">|</span>
-          <span class="flex items-center gap-1 text-red-600 dark:text-red-400"><span id="detailUnexcused">0</span> 🔴 غياب بلا عذر</span>
+          <span class="flex items-center gap-1 text-red-600 dark:text-red-400"><span id="detailUnexcused">0</span> 🔴
+            غياب بلا عذر</span>
         </div>
         <h4 class="font-bold mb-3 border-b dark:border-slate-700 pb-2">السجل اليومي لهذا الشهر</h4>
         <div class="overflow-x-auto">
@@ -565,7 +632,7 @@
     /* --- STATE MANAGEMENT --- */
     let state = {
       students: [],
-      records: {}, 
+      records: {},
       currentYear: new Date().getFullYear(),
       currentMonth: new Date().getMonth() + 1
     };
@@ -628,13 +695,13 @@
     }
 
     function calculateQuranPoints(pages) {
-      let p = parseInt(pages);
+      let p = parseFloat(pages);
       if (isNaN(p) || p <= 0) return 0;
 
       if (p <= RULES.QURAN.THRESHOLD) {
         return p * RULES.QURAN.BASE_POINTS;
       } else {
-        let basePoints = RULES.QURAN.THRESHOLD * RULES.QURAN.BASE_POINTS; 
+        let basePoints = RULES.QURAN.THRESHOLD * RULES.QURAN.BASE_POINTS;
         let extraPages = p - RULES.QURAN.THRESHOLD;
         let extraPoints = extraPages * RULES.QURAN.EXTRA_POINTS;
         return basePoints + extraPoints;
@@ -723,7 +790,7 @@
 
         stats.attPoints += ap;
         stats.quranPoints += qp;
-        stats.totalPages += (parseInt(rec.pages) || 0);
+        stats.totalPages += (parseFloat(rec.pages) || 0);
 
         if (rec.attendance === 'present') stats.present++;
         if (rec.attendance === 'excused') stats.excused++;
@@ -907,7 +974,7 @@
 
           rowHtml += `
             <td class="px-2 py-2 border-r border-slate-100 dark:border-slate-700/50 text-center">
-                <input type="number" min="0" placeholder="0" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded px-2 py-1 w-16 text-center focus:outline-none focus:border-emerald-500" 
+                <input type="number" step="any" min="0" placeholder="0" class="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded px-2 py-1 w-16 text-center focus:outline-none focus:border-emerald-500" 
                     value="${pages}" 
                     onchange="updateRecord('${s.id}', '${dKey}', 'pages', this.value); renderQuran();">
                 ${ptsHtml}
@@ -1150,7 +1217,7 @@
             state.records = importedState.records;
             saveData();
             alert('تم استيراد البيانات بنجاح!');
-            location.reload(); 
+            location.reload();
           } else {
             alert('ملف البيانات غير صالح.');
           }
